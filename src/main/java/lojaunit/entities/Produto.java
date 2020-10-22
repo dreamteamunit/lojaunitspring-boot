@@ -1,10 +1,15 @@
 package lojaunit.entities;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Produto {
@@ -16,6 +21,19 @@ public class Produto {
 	@Column(name="preco_unitario")
 	private Double precoUnitario;
 	private String unidade;
+    @OneToMany(mappedBy = "produto")
+    private List<Faq> faqs;
+    @OneToMany(mappedBy = "produto")
+    private List<ItensVenda> itensVenda;
+    @ManyToOne
+	@JoinColumn(name="id_categoria")
+	private Categoria categoria;
+    @ManyToOne
+	@JoinColumn(name="id_fornecedor")
+	private Fornecedor fornecedor;
+    @ManyToOne
+	@JoinColumn(name="id_marca")
+	private Marca marca;
 	
 	public Integer id() {
 		return id;

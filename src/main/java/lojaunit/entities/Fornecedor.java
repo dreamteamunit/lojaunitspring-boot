@@ -1,9 +1,12 @@
 package lojaunit.entities;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Fornecedor {
@@ -15,6 +18,8 @@ public class Fornecedor {
 	private String telefone;
 	private String cnpj;
 	private String email;
+	@OneToMany(mappedBy = "fornecedor")
+    private List<Produto> produtos;
 	
 	public Integer getId() {
 		return id;

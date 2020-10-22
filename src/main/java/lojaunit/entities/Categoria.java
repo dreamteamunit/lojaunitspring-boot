@@ -7,17 +7,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 @Entity
-@Table(name="marcas")
-public class Marca {
+public class Categoria {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer id;
 	private String nome;
-	private String descricao;
-	@OneToMany(mappedBy = "marca")
+	private Boolean ativo;
+    @OneToMany(mappedBy = "categoria")
     private List<Produto> produtos;
 	
 	public Integer getId() {
@@ -36,11 +34,11 @@ public class Marca {
 		this.nome = nome;
 	}
 
-	public String getDescricao() {
-		return descricao;
+	public boolean isAtivo() {
+		return ativo;
 	}
 
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
-	}
+	public void setAtivo(boolean ativo) {
+		this.ativo = ativo;
+	}	
 }

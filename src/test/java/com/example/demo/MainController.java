@@ -19,7 +19,6 @@ import lojaunit.repository.ClienteRepository;
 @RequestMapping(path="/demo")
 public class MainController {
 	@Autowired
-	
 	private ClienteRepository clienteRepository;
 
 	@PostMapping(path="/add")

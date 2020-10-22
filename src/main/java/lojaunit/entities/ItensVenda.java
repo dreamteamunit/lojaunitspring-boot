@@ -3,12 +3,22 @@ package lojaunit.entities;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name="itens_venda")
 public class ItensVenda {
+	
 	@Id
+	@ManyToOne
+	@JoinColumn(name="id_venda")
+	private Venda venda;
+	@Id
+	@ManyToOne
+	@JoinColumn(name="id_venda")
+	private Produto produto;
 	private Integer quantidade;
 	@Column(name="valor_unitario")
 	private Double valorUnitario;
@@ -25,4 +35,17 @@ public class ItensVenda {
 	public void setValorUnitario(Double valorUnitario) {
 		this.valorUnitario = valorUnitario;
 	}
+	public Venda getVenda() {
+		return venda;
+	}
+	public void setVenda(Venda venda) {
+		this.venda = venda;
+	}
+	public Produto getProduto() {
+		return produto;
+	}
+	public void setProduto(Produto produto) {
+		this.produto = produto;
+	}
+	
 }

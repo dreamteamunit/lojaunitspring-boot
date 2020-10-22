@@ -1,9 +1,12 @@
 package lojaunit.entities;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -15,6 +18,8 @@ public class FormaPagamento {
 	private String forma;
 	private String descricao;
 	private Boolean ativo;
+	@OneToMany(mappedBy = "formaPagamento")
+    private List<Venda> vendas;
 	
 	public Integer getId() {
 		return id;
