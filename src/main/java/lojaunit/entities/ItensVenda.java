@@ -3,13 +3,13 @@ package lojaunit.entities;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
 @Entity
-@Table(name="itens_venda")
-public class ItensVenda {
+@IdClass(IdItemVenda.class)
+public class ItensVenda  {
 	
 	@Id
 	@ManyToOne
@@ -17,7 +17,7 @@ public class ItensVenda {
 	private Venda venda;
 	@Id
 	@ManyToOne
-	@JoinColumn(name="id_venda")
+	@JoinColumn(name="id_produto")
 	private Produto produto;
 	private Integer quantidade;
 	@Column(name="valor_unitario")
@@ -47,5 +47,15 @@ public class ItensVenda {
 	public void setProduto(Produto produto) {
 		this.produto = produto;
 	}
+//	@Override
+//	public boolean equals(Object obj) {
+//		// TODO Auto-generated method stub
+//		return super.equals(obj);
+//	}
+//	@Override
+//	public String toString() {
+//		// TODO Auto-generated method stub
+//		return super.toString();
+//	}
 	
 }

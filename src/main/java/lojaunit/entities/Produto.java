@@ -2,7 +2,6 @@ package lojaunit.entities;
 
 import java.util.List;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,7 +17,6 @@ public class Produto {
 	private Integer id;
 	private String nome;
 	private String descricao;
-	@Column(name="preco_unitario")
 	private Double precoUnitario;
 	private String unidade;
     @OneToMany(mappedBy = "produto")

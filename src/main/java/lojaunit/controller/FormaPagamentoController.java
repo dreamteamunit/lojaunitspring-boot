@@ -20,18 +20,16 @@ public class FormaPagamentoController {
 	
 	@PostMapping(path="/add")
 	public @ResponseBody String addNewFormaPagamento (
-			@RequestParam Integer id,
 			@RequestParam String forma,
 			@RequestParam String descricao,
 			@RequestParam Boolean ativo) {
 		
 		FormaPagamento formaPagamento = new FormaPagamento();
-		formaPagamento.setId(id);
 		formaPagamento.setForma(forma);
 		formaPagamento.setDescricao(descricao);
 		formaPagamento.setAtivo(ativo);
 		formaPagamentoRepository.save(formaPagamento);
-		return "Forma de Pagamento";
+		return "Forma de Pagamento cadastrada com sucesso";
 	}
 
 	@GetMapping(path="/all")

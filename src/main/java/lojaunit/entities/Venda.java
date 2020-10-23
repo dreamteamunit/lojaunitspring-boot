@@ -2,7 +2,6 @@ package lojaunit.entities;
 
 import java.sql.Date;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,7 +23,6 @@ public class Venda {
 	@ManyToOne
 	@JoinColumn(name="id_forma_pagamento")
 	private FormaPagamento formaPagamento;
-	@Column(name="valor_total")
 	private Double valorTotal;
 	
 	public Integer getId() {
