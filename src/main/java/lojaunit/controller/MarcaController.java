@@ -52,7 +52,7 @@ public class MarcaController {
 	
 	@DeleteMapping(path="/delete/{id}")
 	public @ResponseBody String deleteMarcaById(@PathVariable("id")Integer id) {
-		if(getMarcaById(id) != null) {
+		if(marcaRepository.existsById(id)) {
 			marcaRepository.deleteById(id);
 			return "Marca apagada com Sucesso";
 		}

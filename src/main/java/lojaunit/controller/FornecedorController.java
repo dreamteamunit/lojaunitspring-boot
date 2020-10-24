@@ -58,7 +58,7 @@ public class FornecedorController {
 	
 	@DeleteMapping(path="/delete/{id}")
 	public @ResponseBody String deleteFornecedorById(@PathVariable("id")Integer id) {
-		if(getFornecedorById(id) != null) {
+		if(fornecedorRepository.existsById(id)) {
 			fornecedorRepository.deleteById(id);
 			return "Fornecedor apagado com sucesso";
 		}

@@ -17,12 +17,12 @@ import lojaunit.entities.Cliente;
 import lojaunit.repository.ClienteRepository;
 
 @Controller
-@RequestMapping(path = "/clientes")
+@RequestMapping(path="/clientes")
 public class ClienteController {
 	@Autowired
 	private ClienteRepository clienteRepository;
 
-	@PostMapping(path = "/add")
+	@PostMapping(path="/add")
 	public @ResponseBody String addNewCliente(@RequestParam String nome, @RequestParam String cpf,
 			@RequestParam String email, @RequestParam Date dataNascimento, @RequestParam String sexo,
 			@RequestParam String nomeSocial, @RequestParam String apelido, @RequestParam String telefone) {
@@ -40,29 +40,27 @@ public class ClienteController {
 		return "Cliente Cadastrado com Sucesso!";
 	}
 
-	@GetMapping(path = "/all")
+	@GetMapping(path="/all")
 	public @ResponseBody Iterable<Cliente> getAllClientes() {
 		return clienteRepository.findAll();
 	}
 
-	@GetMapping(path = "/find/{id}")
-	public @ResponseBody Optional<Cliente> getClienteById(@PathVariable("id") Integer id) {
+	@GetMapping(path="/find/{id}")
+	public @ResponseBody Optional<Cliente> getClienteById(@PathVariable("id") Integer id){
 		return clienteRepository.findById(id);
 	}
 
-	@DeleteMapping(path = "/delete/{id}")
+	@DeleteMapping(path="/delete/{id}")
 	public @ResponseBody String deleteClienteById(@PathVariable("id") Integer id) {
-		if (getClienteById(id) != null) {
+		if(clienteRepository.existsById(id)) {
 			clienteRepository.deleteById(id);
 			return "Cliente apagado com Sucesso";
 		}
-
 		return "Cliente não encontrado!";
 	}
 
-	@DeleteMapping(path = "/delete/all")
+	@DeleteMapping(path="/delete/all")
 	public @ResponseBody String deleteAll() {
-		clienteRepository.deleteAll();
 		return "O conteúdo da Tabela Clientes foi apagado com Sucesso!";
 	}
 }

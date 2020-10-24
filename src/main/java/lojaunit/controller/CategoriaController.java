@@ -49,7 +49,7 @@ public class CategoriaController {
 	
 	@DeleteMapping(path="/delete/{id}")
 	public @ResponseBody String deleteCategoriaById(@PathVariable("id")Integer id) {
-		if(getCategoriaById(id) != null) {
+		if(categoriaRepository.existsById(id)) {
 			categoriaRepository.deleteById(id);
 			return "Categoria apagada com sucesso";
 		}

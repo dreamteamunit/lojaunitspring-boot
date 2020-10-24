@@ -54,7 +54,7 @@ public class FormaPagamentoController {
 	
 	@DeleteMapping(path="/delete/{id}")
 	public @ResponseBody String deleteFormaPagamentoById(@PathVariable("id")Integer id) {
-		if(getFormaPagamentoById(id) != null) {
+		if(formaPagamentoRepository.existsById(id)) {
 			formaPagamentoRepository.deleteById(id);
 			return "Forma de Pagamento apagada com sucesso";
 		}
