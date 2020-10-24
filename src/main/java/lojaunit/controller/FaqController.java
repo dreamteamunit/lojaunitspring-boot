@@ -22,13 +22,11 @@ public class FaqController {
 	
 	@PostMapping(path="/add")
 	public @ResponseBody String addNewFaq(
-			@RequestParam Integer id,
 			@RequestParam Date datahora,
 			@RequestParam String texto
 			) {
 		
 		Faq faq = new Faq();
-		faq.setId(id);
 		faq.setDatahora(datahora);
 		faq.setTexto(texto);
 		faqRepository.save(faq);

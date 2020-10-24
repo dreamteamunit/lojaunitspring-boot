@@ -20,14 +20,12 @@ public class ProdutoController {
 	
 	@PostMapping(path="/add")
 	public @ResponseBody String addNewProduto(
-			@RequestParam Integer id,
 			@RequestParam String nome,
 			@RequestParam String descricao,
 			@RequestParam Double precoUnitario,
 			@RequestParam String unidade) {
 		
 		Produto produto = new Produto();
-		produto.setId(id);
 		produto.setNome(nome);
 		produto.setDescricao(descricao);
 		produto.setPrecoUnitario(precoUnitario);

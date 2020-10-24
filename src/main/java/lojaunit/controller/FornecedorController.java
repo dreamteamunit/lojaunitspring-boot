@@ -1,8 +1,12 @@
 package lojaunit.controller;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,7 +24,6 @@ public class FornecedorController {
 	
 	@PostMapping(path="/add")
 	public @ResponseBody String addNewFornecedor(
-			@RequestParam Integer id,
 			@RequestParam String nome,
 			@RequestParam String endereco,
 			@RequestParam String telefone,
@@ -28,7 +31,6 @@ public class FornecedorController {
 			@RequestParam String email) {
 		
 		Fornecedor fornecedor = new Fornecedor();
-		fornecedor.setId(id);
 		fornecedor.setNome(nome);
 		fornecedor.setEndereco(endereco);
 		fornecedor.setTelefone(telefone);
@@ -41,5 +43,25 @@ public class FornecedorController {
 	@GetMapping(path="/all")
 	public @ResponseBody Iterable<Fornecedor> getAllFornecedores(){
 		return fornecedorRepository.findAll();
+	}
+	
+	@GetMapping(path="/find/{id}")
+	public @ResponseBody Optional<Fornecedor> getFornecedorById(@PathVariable("id")Integer id){
+		return fornecedorRepository.findById(id);
+	}
+	
+	@DeleteMapping(path="/delete/all")
+	public @ResponseBody String deleteAll() {
+		fornecedorRepository.deleteAll();
+		return "O conteúdo da Tabela Fornecedor foi apagado com Sucesso!";
+	}
+	
+	@DeleteMapping(path="/delete/{id}")
+	public @ResponseBody String deleteFornecedorById(@PathVariable("id")Integer id) {
+		if(getFornecedorById(id) != null) {
+			fornecedorRepository.deleteById(id);
+			return "Fornecedor apagado com sucesso";
+		}
+		return "Fornecedor não encontrado";
 	}
 }

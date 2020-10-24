@@ -22,12 +22,10 @@ public class VendaController {
 	
 	@PostMapping(path="/add")
 	public @ResponseBody String addNewVenda(
-			@RequestParam Integer id,
 			@RequestParam Date datahora,
 			@RequestParam Double valorTotal) {
 		
 		Venda venda = new Venda();
-		venda.setId(id);
 		venda.setDatahora(datahora);
 		venda.setValorTotal(valorTotal);
 		vendaRepository.save(venda);
