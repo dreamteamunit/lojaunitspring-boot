@@ -61,6 +61,7 @@ public class ClienteController {
 
 	@DeleteMapping(path="/delete/all")
 	public @ResponseBody String deleteAll() {
+		clienteRepository.deleteAll();
 		return "O conteúdo da Tabela Clientes foi apagado com Sucesso!";
 	}
 }

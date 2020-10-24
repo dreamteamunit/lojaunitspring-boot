@@ -1,6 +1,6 @@
 package lojaunit.entities;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,7 +16,7 @@ public class Venda {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer id;
-	private Date datahora;
+	private Timestamp datahora;
 	@ManyToOne
 	@JoinColumn(name="id_cliente")
 	private Cliente cliente;
@@ -28,20 +28,41 @@ public class Venda {
 	public Integer getId() {
 		return id;
 	}
+	
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	public Date getDatahora() {
+	
+	public Timestamp getDatahora() {
 		return datahora;
 	}
-	public void setDatahora(Date datahora) {
+	
+	public void setDatahora(Timestamp datahora) {
 		this.datahora = datahora;
 	}
+	
 	public Double getValorTotal() {
 		return valorTotal;
 	}
+	
 	public void setValorTotal(Double valorTotal) {
 		this.valorTotal = valorTotal;
+	}
+	
+	public Cliente getCliente() {
+		return cliente;
+	}
+	
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+	
+	public FormaPagamento getFormaPagamento() {
+		return formaPagamento;
+	}
+	
+	public void setFormaPagamento(FormaPagamento formaPagamento) {
+		this.formaPagamento = formaPagamento;
 	}
 }
 
