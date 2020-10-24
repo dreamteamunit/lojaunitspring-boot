@@ -16,27 +16,34 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import lojaunit.entities.Faq;
 import lojaunit.entities.Produto;
 import lojaunit.repository.FaqRepository;
+import lojaunit.repository.ProdutoRepository;
+//import lojaunit.controller.ProdutoController;
 
 @Controller
 @RequestMapping(path="/faq")
 public class FaqController {
 	@Autowired
-	
 	private FaqRepository faqRepository;
+	@Autowired
+	private ProdutoRepository produtoRepository;
 	
 	@PostMapping(path="/add")
 	public @ResponseBody String addNewFaq(
 			@RequestParam Timestamp datahora,
 			@RequestParam String texto,
-			@RequestParam Produto produto
+			@RequestParam Integer idProduto
 			) {
 		
 		Faq faq = new Faq();
 		faq.setDatahora(datahora);
 		faq.setTexto(texto);
+		///ProdutoController pc = new ProdutoController();
+		Produto produto = produtoRepository.findById(idProduto).get();
+				//pc.getProdutoById(idProduto).get();
+		System.out.println(produto.id());
 		faq.setProduto(produto);
 		faqRepository.save(faq);
-		return "Faq";
+		return "Faq Cadastrado com Sucesso!";
 	}
 	
 	@GetMapping(path="/all")
