@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -16,6 +17,9 @@ import lojaunit.entities.Categoria;
 import lojaunit.entities.Fornecedor;
 import lojaunit.entities.Marca;
 import lojaunit.entities.Produto;
+import lojaunit.repository.CategoriaRepository;
+import lojaunit.repository.FornecedorRepository;
+import lojaunit.repository.MarcaRepository;
 import lojaunit.repository.ProdutoRepository;
 
 @Controller
@@ -25,23 +29,33 @@ public class ProdutoController {
 	
 	private ProdutoRepository produtoRepository;
 	
+	@Autowired
+	private CategoriaRepository categoriaRepository;
+	@Autowired
+	private FornecedorRepository fornecedorRepository;
+	@Autowired
+	private MarcaRepository marcaRepository;
+	
 	@PostMapping(path="/add")
 	public @ResponseBody String addNewProduto(
 			@RequestParam String nome,
 			@RequestParam String descricao,
 			@RequestParam Double precoUnitario,
 			@RequestParam String unidade,
-			@RequestParam Categoria categoria,
-			@RequestParam Fornecedor fornecedor,
-			@RequestParam Marca marca) {
+			@RequestParam Integer idCategoria,
+			@RequestParam Integer idFornecedor,
+			@RequestParam Integer idMarca) {
 		
 		Produto produto = new Produto();
 		produto.setNome(nome);
 		produto.setDescricao(descricao);
 		produto.setPrecoUnitario(precoUnitario);
 		produto.setUnidade(unidade);
+		Categoria categoria = categoriaRepository.findById(idCategoria).get();
 		produto.setCategoria(categoria);
+		Fornecedor fornecedor = fornecedorRepository.findById(idFornecedor).get();
 		produto.setFornecedor(fornecedor);
+		Marca marca = marcaRepository.findById(idMarca).get();
 		produto.setMarca(marca);
 		produtoRepository.save(produto);
 		return "Produto com Sucesso!";
@@ -70,5 +84,34 @@ public class ProdutoController {
 	public @ResponseBody String deleteAll() {
 		produtoRepository.deleteAll();
 		return "O conteúdo da Tabela Produto foi apagado com Sucesso!";
+	}
+	
+	@PutMapping(path="/update/{id}")
+	public @ResponseBody String updateProdutoById(
+			@RequestParam String nome,
+			@RequestParam String descricao,
+			@RequestParam Double precoUnitario,
+			@RequestParam String unidade,
+			@RequestParam Integer idCategoria,
+			@RequestParam Integer idFornecedor,
+			@RequestParam Integer idMarca,
+			@PathVariable("id")Integer id) {
+		if(produtoRepository.existsById(id)) {
+			Produto produto = new Produto();
+			produto.setId(id);
+			produto.setNome(nome);
+			produto.setDescricao(descricao);
+			produto.setPrecoUnitario(precoUnitario);
+			produto.setUnidade(unidade);
+			Categoria categoria = categoriaRepository.findById(idCategoria).get();
+			produto.setCategoria(categoria);
+			Fornecedor fornecedor = fornecedorRepository.findById(idFornecedor).get();
+			produto.setFornecedor(fornecedor);
+			Marca marca = marcaRepository.findById(idMarca).get();
+			produto.setMarca(marca);
+			produtoRepository.save(produto);
+			return "Produto com Sucesso!";
+		}
+		return "Produto não encontrado";
 	}
 }

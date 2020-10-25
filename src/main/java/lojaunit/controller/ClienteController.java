@@ -66,8 +66,8 @@ public class ClienteController {
 		return "O conteúdo da Tabela Clientes foi apagado com Sucesso!";
 	}
 
-	@PutMapping(path = "/alterar/{id}")
-	public @ResponseBody String alterarCliente(@RequestParam String nome, @RequestParam String cpf,
+	@PutMapping(path = "/update/{id}")
+	public @ResponseBody String updateClienteById(@RequestParam String nome, @RequestParam String cpf,
 			@RequestParam String email, @RequestParam Date dataNascimento, @RequestParam String sexo,
 			@RequestParam String nomeSocial, @RequestParam String apelido, @RequestParam String telefone,
 			@PathVariable("id") Integer id) {
@@ -84,8 +84,9 @@ public class ClienteController {
 			cliente.setApelido(apelido);
 			cliente.setTelefone(telefone);
 			clienteRepository.save(cliente);
+			return "Cliente atualizado com Sucesso!";
 		}
 
-		return "Cliente atualizado com Sucesso!";
+		return "Cliente não encontrado";
 	}
 }

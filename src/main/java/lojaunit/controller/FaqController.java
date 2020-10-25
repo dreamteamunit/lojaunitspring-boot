@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -17,7 +18,6 @@ import lojaunit.entities.Faq;
 import lojaunit.entities.Produto;
 import lojaunit.repository.FaqRepository;
 import lojaunit.repository.ProdutoRepository;
-//import lojaunit.controller.ProdutoController;
 
 @Controller
 @RequestMapping(path="/faq")
@@ -33,14 +33,10 @@ public class FaqController {
 			@RequestParam String texto,
 			@RequestParam Integer idProduto
 			) {
-		
 		Faq faq = new Faq();
 		faq.setDatahora(datahora);
 		faq.setTexto(texto);
-		///ProdutoController pc = new ProdutoController();
 		Produto produto = produtoRepository.findById(idProduto).get();
-				//pc.getProdutoById(idProduto).get();
-		System.out.println(produto.id());
 		faq.setProduto(produto);
 		faqRepository.save(faq);
 		return "Faq Cadastrado com Sucesso!";
@@ -67,6 +63,25 @@ public class FaqController {
 		if(faqRepository.existsById(id)) {
 			faqRepository.deleteById(id);
 			return "Faq apagado com sucesso";
+		}
+		return "Faq não encontrado";
+	}
+	
+	@PutMapping(path="/update/{id}")
+	public @ResponseBody String updateFaqById(
+			@RequestParam Timestamp datahora,
+			@RequestParam String texto,
+			@RequestParam Integer idProduto,
+			@PathVariable("id")Integer id) {
+		if(faqRepository.existsById(id)) {
+			Produto produto = produtoRepository.findById(idProduto).get();
+			Faq faq = new Faq();
+			faq.setId(id);
+			faq.setDatahora(datahora);
+			faq.setTexto(texto);
+			faq.setProduto(produto);
+			faqRepository.save(faq);
+			return "Faq atualizado com Sucesso!";
 		}
 		return "Faq não encontrado";
 	}

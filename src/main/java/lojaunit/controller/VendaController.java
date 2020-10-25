@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import lojaunit.entities.Cliente;
 import lojaunit.entities.FormaPagamento;
 import lojaunit.entities.Venda;
+import lojaunit.repository.ClienteRepository;
+import lojaunit.repository.FormaPagamentoRepository;
 import lojaunit.repository.VendaRepository;
 
 @Controller
@@ -25,20 +28,27 @@ public class VendaController {
 	
 	private VendaRepository vendaRepository;
 	
+	@Autowired
+	private ClienteRepository clienteRepository;
+	@Autowired
+	private FormaPagamentoRepository formaPagamentoRepository;
+	
 	@PostMapping(path="/add")
 	public @ResponseBody String addNewVenda(
 			@RequestParam Timestamp datahora,
 			@RequestParam Double valorTotal,
-			@RequestParam Cliente cliente,
-			@RequestParam FormaPagamento formaPagamento) {
+			@RequestParam Integer idCliente,
+			@RequestParam Integer idFormaPagamento) {
 		
 		Venda venda = new Venda();
 		venda.setDatahora(datahora);
 		venda.setValorTotal(valorTotal);
+		Cliente cliente = clienteRepository.findById(idCliente).get();
 		venda.setCliente(cliente);
+		FormaPagamento formaPagamento = formaPagamentoRepository.findById(idFormaPagamento).get();
 		venda.setFormaPagamento(formaPagamento);
 		vendaRepository.save(venda);
-		return "Venda com Sucesso!";
+		return "Venda realizada com Sucesso!";
 	}
 	
 	@GetMapping(path="/all")
@@ -62,6 +72,28 @@ public class VendaController {
 		if(vendaRepository.existsById(id)) {
 			vendaRepository.deleteById(id);
 			return "Venda apagada com sucesso";
+		}
+		return "Venda não encontrada";
+	}
+	
+	@PutMapping(path="/update/{id}")
+	public @ResponseBody String updateVendaById(
+			@RequestParam Timestamp datahora,
+			@RequestParam Double valorTotal,
+			@RequestParam Integer idCliente,
+			@RequestParam Integer idFormaPagamento,
+			@PathVariable("id")Integer id) {
+		if(vendaRepository.existsById(id)) {
+			Venda venda = new Venda();
+			venda.setId(id);
+			venda.setDatahora(datahora);
+			venda.setValorTotal(valorTotal);
+			Cliente cliente = clienteRepository.findById(idCliente).get();
+			venda.setCliente(cliente);
+			FormaPagamento formaPagamento = formaPagamentoRepository.findById(idFormaPagamento).get();
+			venda.setFormaPagamento(formaPagamento);
+			vendaRepository.save(venda);
+			return "Venda atualizada com Sucesso!";
 		}
 		return "Venda não encontrada";
 	}

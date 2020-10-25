@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -61,6 +62,28 @@ public class FornecedorController {
 		if(fornecedorRepository.existsById(id)) {
 			fornecedorRepository.deleteById(id);
 			return "Fornecedor apagado com sucesso";
+		}
+		return "Fornecedor não encontrado";
+	}
+	
+	@PutMapping(path="/update/{id}")
+	public @ResponseBody String updateFornecedorById(
+			@RequestParam String nome,
+			@RequestParam String endereco,
+			@RequestParam String telefone,
+			@RequestParam String cnpj,
+			@RequestParam String email,
+			@PathVariable("id")Integer id) {
+		if(fornecedorRepository.existsById(id)) {
+			Fornecedor fornecedor = new Fornecedor();
+			fornecedor.setId(id);
+			fornecedor.setNome(nome);
+			fornecedor.setEndereco(endereco);
+			fornecedor.setTelefone(telefone);
+			fornecedor.setCnpj(cnpj);
+			fornecedor.setEmail(email);
+			fornecedorRepository.save(fornecedor);
+			return "Fornecedor atualizado com Sucesso!";
 		}
 		return "Fornecedor não encontrado";
 	}
