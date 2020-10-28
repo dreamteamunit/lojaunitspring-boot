@@ -33,7 +33,7 @@ public class Produto {
 	@JoinColumn(name="id_marca")
 	private Marca marca;
 	
-	public Integer id() {
+	public Integer getId() {
 		return id;
 	}
 	

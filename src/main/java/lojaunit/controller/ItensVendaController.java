@@ -56,9 +56,9 @@ public class ItensVendaController {
 		return itensVendaRepository.findAll();
 	}
 	
-	@GetMapping(path="/find/{id}")
-	public @ResponseBody Optional<ItensVenda> getItensVendaById(@PathVariable("id")Integer id){
-		return itensVendaRepository.findById(id);
+	@GetMapping(path="/find/venda/{idVenda}/produto/{idProduto}")
+	public @ResponseBody Optional<ItensVenda> getItensVendaById(@PathVariable("idVenda")Integer idVenda,@PathVariable("idProduto")Integer idProduto){
+		return itensVendaRepository.findByIdVendaAndIdProduto(idVenda, idProduto);
 	}
 	
 	@DeleteMapping(path="/delete/all")
@@ -67,26 +67,29 @@ public class ItensVendaController {
 		return "O conteúdo da Tabela ItensVenda foi apagado com Sucesso!";
 	}
 	
-	@DeleteMapping(path="/delete/{id}")
-	public @ResponseBody String deleteItensVendaById(@PathVariable("id")Integer id) {
-		if(itensVendaRepository.existsById(id)) {
-			itensVendaRepository.deleteById(id);
+	@DeleteMapping(path="/delete/venda/{idVenda}/produto/{idProduto}")
+	public @ResponseBody String deleteItensVendaById(@PathVariable Integer idVenda,
+			@PathVariable Integer idProduto) {
+		ItensVenda itensVenda2 =itensVendaRepository.findByIdVendaAndIdProduto(idVenda, idProduto).get(); 
+		if(itensVenda2!=null) {
+			itensVendaRepository.deleteByIds(idVenda,idProduto);
 			return "ItensVenda apagado com sucesso";
 		}
 		return "ItensVenda não encontrado";
 	}
 	
-	@PutMapping(path="/update/{id}")
+	@PutMapping(path="/update/venda/{idVenda}/produto/{idProduto}")
 	public @ResponseBody String updateItensVendaById(
 			@RequestParam Integer quantidade,
 			@RequestParam Double valorUnitario,
 			@RequestParam Integer idVenda,
-			@RequestParam Integer idProduto,
-			@PathVariable("id")Integer id) {
-		if(itensVendaRepository.existsById(id)) {
-			Venda venda = vendaRepository.findById(idVenda).get();
+			@RequestParam Integer idProduto) {
+		ItensVenda itensVenda2 =itensVendaRepository.findByIdVendaAndIdProduto(idVenda, idProduto).get(); 
+		if(itensVenda2!=null) {
+			//Venda venda = vendaRepository.findById(idVenda).get();
+			Venda venda = itensVenda2.getVenda();
+			Produto produto = itensVenda2.getProduto();
 			ItensVenda itensVenda = new ItensVenda();
-			Produto produto = produtoRepository.findById(idProduto).get();
 			itensVenda.setQuantidade(quantidade);
 			itensVenda.setValorUnitario(valorUnitario);
 			itensVenda.setVenda(venda);

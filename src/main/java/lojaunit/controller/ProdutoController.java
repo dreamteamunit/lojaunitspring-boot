@@ -58,7 +58,7 @@ public class ProdutoController {
 		Marca marca = marcaRepository.findById(idMarca).get();
 		produto.setMarca(marca);
 		produtoRepository.save(produto);
-		return "Produto com Sucesso!";
+		return "Produto cadastrado com Sucesso!";
 	}
 	
 	@GetMapping(path="/all")
