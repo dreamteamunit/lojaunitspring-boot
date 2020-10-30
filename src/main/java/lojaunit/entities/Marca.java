@@ -44,3 +44,4 @@ public class Marca {
 		this.descricao = descricao;
 	}
 }
+

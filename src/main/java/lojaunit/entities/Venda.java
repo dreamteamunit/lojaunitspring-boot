@@ -65,4 +65,3 @@ public class Venda {
 		this.formaPagamento = formaPagamento;
 	}
 }
-
