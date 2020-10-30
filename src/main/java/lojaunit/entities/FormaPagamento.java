@@ -11,7 +11,7 @@ import javax.persistence.OneToMany;
 @Entity
 public class FormaPagamento {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	private String forma;
 	private String descricao;

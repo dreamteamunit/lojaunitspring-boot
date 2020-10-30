@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 @Entity
 public class Faq {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	private Timestamp datahora;
 	private String texto;
