@@ -3,7 +3,14 @@ package lojaunit.controller;
 import java.sql.Timestamp;
 import java.util.Optional;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
+import javax.validation.Path.Node;
+import javax.validation.UnexpectedTypeException;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +20,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
 
 import lojaunit.entities.Faq;
 import lojaunit.entities.Produto;
@@ -28,7 +36,7 @@ public class FaqController {
 	private ProdutoRepository produtoRepository;
 	
 	@PostMapping(path="/add")
-	public @ResponseBody String addNewFaq(
+	public @ResponseBody String addNewFaq(@Valid
 			@RequestParam Timestamp datahora,
 			@RequestParam String texto,
 			@RequestParam Integer idProduto
@@ -38,7 +46,21 @@ public class FaqController {
 		faq.setTexto(texto);
 		Produto produto = produtoRepository.findById(idProduto).get();
 		faq.setProduto(produto);
-		faqRepository.save(faq);
+		try {
+			faqRepository.save(faq);
+		}catch(ConstraintViolationException e) {
+			ConstraintViolation<?> violation = e.getConstraintViolations().iterator().next();
+			// get the last node of the violation
+			String field = "";
+			for (Node node : violation.getPropertyPath()) {
+			    field += node.getName();
+			}
+			throw new ResponseStatusException(
+			           HttpStatus.BAD_REQUEST, "Falha no cadastro da faq.Campo faltando:"+field);
+		}catch(UnexpectedTypeException e) {
+			throw new ResponseStatusException(
+			           HttpStatus.BAD_REQUEST, "Falha no cadastro da faq.:");
+		}
 		return "Faq Cadastrado com Sucesso!";
 	}
 	

@@ -8,12 +8,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import javax.validation.constraints.NotBlank;
+
 @Entity
 public class Categoria {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	private String nome;
+	@NotBlank(message="Campo obrigatório")
 	private Boolean ativo;
     @OneToMany(mappedBy = "categoria")
     private List<Produto> produtos;

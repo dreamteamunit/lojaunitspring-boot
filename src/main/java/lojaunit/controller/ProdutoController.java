@@ -2,7 +2,13 @@ package lojaunit.controller;
 
 import java.util.Optional;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
+import javax.validation.Path.Node;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
 
 import lojaunit.entities.Categoria;
 import lojaunit.entities.Fornecedor;
@@ -37,7 +44,7 @@ public class ProdutoController {
 	private MarcaRepository marcaRepository;
 	
 	@PostMapping(path="/add")
-	public @ResponseBody String addNewProduto(
+	public @ResponseBody String addNewProduto(@Valid
 			@RequestParam String nome,
 			@RequestParam String descricao,
 			@RequestParam Double precoUnitario,
@@ -57,7 +64,18 @@ public class ProdutoController {
 		produto.setFornecedor(fornecedor);
 		Marca marca = marcaRepository.findById(idMarca).get();
 		produto.setMarca(marca);
-		produtoRepository.save(produto);
+		try {
+			produtoRepository.save(produto);
+		}catch(ConstraintViolationException e) {
+			ConstraintViolation<?> violation = e.getConstraintViolations().iterator().next();
+			// get the last node of the violation
+			String field = "";
+			for (Node node : violation.getPropertyPath()) {
+			    field += node.getName();
+			}
+			throw new ResponseStatusException(
+			           HttpStatus.BAD_REQUEST, "Falha no cadastro do produto.Campo faltando:"+field);
+		}
 		return "Produto cadastrado com Sucesso!";
 	}
 	

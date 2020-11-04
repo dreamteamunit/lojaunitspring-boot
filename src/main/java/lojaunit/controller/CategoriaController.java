@@ -2,7 +2,13 @@ package lojaunit.controller;
 
 import java.util.Optional;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Path.Node;
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
 
 import lojaunit.entities.Categoria;
 import lojaunit.repository.CategoriaRepository;
@@ -24,11 +31,22 @@ public class CategoriaController {
 	private CategoriaRepository categoriaRepository;
 	
 	@PostMapping(path="/add")
-	public @ResponseBody String addNewCategoria(@RequestParam String nome, @RequestParam Boolean ativo) {
+	public @ResponseBody String addNewCategoria(@Valid @RequestParam String nome, @RequestParam Boolean ativo) {
 		Categoria categoria = new Categoria();
 		categoria.setNome(nome);
 		categoria.setAtivo(ativo);
-		categoriaRepository.save(categoria);
+		try {
+			categoriaRepository.save(categoria);
+		}catch(ConstraintViolationException e) {
+			ConstraintViolation<?> violation = e.getConstraintViolations().iterator().next();
+			// get the last node of the violation
+			String field = "";
+			for (Node node : violation.getPropertyPath()) {
+			    field += node.getName();
+			}
+			throw new ResponseStatusException(
+			           HttpStatus.BAD_REQUEST, "Falha no cadastro da categoria.Campo faltando:"+field);
+		}
 		return "Categoria cadastrada com Sucesso!";
 	}
 	
