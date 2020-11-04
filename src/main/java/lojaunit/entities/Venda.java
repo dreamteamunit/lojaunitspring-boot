@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name="vendas")
@@ -16,6 +17,7 @@ public class Venda {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
+	@NotNull(message="Campo obrigatório")
 	private Timestamp datahora;
 	@ManyToOne
 	@JoinColumn(name="id_cliente")

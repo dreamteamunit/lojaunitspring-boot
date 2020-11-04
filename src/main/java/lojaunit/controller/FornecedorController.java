@@ -2,7 +2,14 @@ package lojaunit.controller;
 
 import java.util.Optional;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
+import javax.validation.Path.Node;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +19,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
 
 import lojaunit.entities.Fornecedor;
 import lojaunit.repository.FornecedorRepository;
@@ -24,7 +32,7 @@ public class FornecedorController {
 	private FornecedorRepository fornecedorRepository;
 	
 	@PostMapping(path="/add")
-	public @ResponseBody String addNewFornecedor(
+	public @ResponseBody String addNewFornecedor(@Valid
 			@RequestParam String nome,
 			@RequestParam String endereco,
 			@RequestParam String telefone,
@@ -37,7 +45,21 @@ public class FornecedorController {
 		fornecedor.setTelefone(telefone);
 		fornecedor.setCnpj(cnpj);
 		fornecedor.setEmail(email);
-		fornecedorRepository.save(fornecedor);
+		try {
+			fornecedorRepository.save(fornecedor);
+		}catch(ConstraintViolationException e) {
+			ConstraintViolation<?> violation = e.getConstraintViolations().iterator().next();
+			// get the last node of the violation
+			String field = "";
+			for (Node node : violation.getPropertyPath()) {
+			    field += node.getName();
+			}
+			throw new ResponseStatusException(
+			           HttpStatus.BAD_REQUEST, "Falha no cadastro de fornecedor.Campo faltando:"+field);
+		}catch(DataIntegrityViolationException e) {
+			throw new ResponseStatusException(
+			           HttpStatus.BAD_REQUEST, "Falha no cadastro do cliente.Cnpj já cadastrado");
+		}
 		return "Fornecedor Salvo com Sucesso!";
 	}
 	

@@ -3,7 +3,14 @@ package lojaunit.controller;
 import java.sql.Timestamp;
 import java.util.Optional;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.UnexpectedTypeException;
+import javax.validation.Valid;
+import javax.validation.Path.Node;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +20,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
 
 import lojaunit.entities.Cliente;
 import lojaunit.entities.FormaPagamento;
@@ -34,7 +42,7 @@ public class VendaController {
 	private FormaPagamentoRepository formaPagamentoRepository;
 	
 	@PostMapping(path="/add")
-	public @ResponseBody String addNewVenda(
+	public @ResponseBody String addNewVenda(@Valid
 			@RequestParam Timestamp datahora,
 			@RequestParam Double valorTotal,
 			@RequestParam Integer idCliente,
@@ -47,7 +55,21 @@ public class VendaController {
 		venda.setCliente(cliente);
 		FormaPagamento formaPagamento = formaPagamentoRepository.findById(idFormaPagamento).get();
 		venda.setFormaPagamento(formaPagamento);
-		vendaRepository.save(venda);
+		try {
+			vendaRepository.save(venda);
+		}catch(ConstraintViolationException e) {
+			ConstraintViolation<?> violation = e.getConstraintViolations().iterator().next();
+			// get the last node of the violation
+			String field = "";
+			for (Node node : violation.getPropertyPath()) {
+			    field += node.getName();
+			}
+			throw new ResponseStatusException(
+			           HttpStatus.BAD_REQUEST, "Falha no cadastro da venda.Campo faltando:"+field);
+		}catch(UnexpectedTypeException e) {
+			throw new ResponseStatusException(
+			           HttpStatus.BAD_REQUEST, "Falha no cadastro da venda:");
+		}
 		return "Venda realizada com Sucesso!";
 	}
 	
