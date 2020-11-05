@@ -45,4 +45,3 @@ public class Categoria {
 		this.ativo = ativo;
 	}	
 }
-

@@ -48,4 +48,3 @@ public class FormaPagamento {
 		this.ativo = ativo;
 	}
 }
-
