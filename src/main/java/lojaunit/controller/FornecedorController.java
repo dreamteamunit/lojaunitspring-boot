@@ -4,12 +4,13 @@ import java.util.Optional;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import javax.validation.Valid;
 import javax.validation.Path.Node;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,7 +33,7 @@ public class FornecedorController {
 	private FornecedorRepository fornecedorRepository;
 	
 	@PostMapping(path="/add")
-	public @ResponseBody String addNewFornecedor(@Valid
+	public ResponseEntity<String> addNewFornecedor(@Valid
 			@RequestParam String nome,
 			@RequestParam String endereco,
 			@RequestParam String telefone,
@@ -54,13 +55,15 @@ public class FornecedorController {
 			for (Node node : violation.getPropertyPath()) {
 			    field += node.getName();
 			}
-			throw new ResponseStatusException(
-			           HttpStatus.BAD_REQUEST, "Falha no cadastro de fornecedor.Campo faltando:"+field);
+			/*throw new ResponseStatusException(
+			           HttpStatus.BAD_REQUEST, "Falha no cadastro de fornecedor.Campo faltando:"+field);*/
+			return new ResponseEntity<String>("Falha no cadastro de fornecedor.Campo faltando:"+field,HttpStatus.BAD_REQUEST);
 		}catch(DataIntegrityViolationException e) {
-			throw new ResponseStatusException(
-			           HttpStatus.BAD_REQUEST, "Falha no cadastro do cliente.Cnpj já cadastrado");
+			/*throw new ResponseStatusException(
+			           HttpStatus.BAD_REQUEST, "Falha no cadastro do fornecedor.Cnpj já cadastrado");*/
+			return new ResponseEntity<String>("Falha no cadastro do fornecedor.Cnpj já cadastrado",HttpStatus.BAD_REQUEST);
 		}
-		return "Fornecedor Salvo com Sucesso!";
+		return new ResponseEntity<String>("Fornecedor Salvo com Sucesso!",HttpStatus.CREATED);
 	}
 	
 	@GetMapping(path="/all")

@@ -9,6 +9,7 @@ import javax.validation.Path.Node;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +32,7 @@ public class MarcaController {
 	private MarcaRepository marcaRepository;
 	
 	@PostMapping(path="/add")
-	public @ResponseBody String addNewMarca(@Valid
+	public ResponseEntity<String> addNewMarca(@Valid
 			@RequestParam String nome,
 			@RequestParam String descricao) {
 		try {
@@ -46,10 +47,11 @@ public class MarcaController {
 			for (Node node : violation.getPropertyPath()) {
 			    field += node.getName();
 			}
-			throw new ResponseStatusException(
-			           HttpStatus.BAD_REQUEST, "Falha no cadastro da marca.Campo faltando:"+field);
+			return  new ResponseEntity<String>("Falha no cadastro da marca.Campo faltando:"+field,HttpStatus.BAD_REQUEST);
+			/*throw new ResponseStatusException(
+			           HttpStatus.BAD_REQUEST, "Falha no cadastro da marca.Campo faltando:"+field);*/
 		}
-		return "Marca cadastrada com Sucesso!"; 
+		return new ResponseEntity<String>("Marca cadastrada com Sucesso!",HttpStatus.CREATED); 
 	}
 	
 	@GetMapping(path="/all")

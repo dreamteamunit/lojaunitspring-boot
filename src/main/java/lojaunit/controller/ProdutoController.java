@@ -4,11 +4,12 @@ import java.util.Optional;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import javax.validation.Valid;
 import javax.validation.Path.Node;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,7 +45,7 @@ public class ProdutoController {
 	private MarcaRepository marcaRepository;
 	
 	@PostMapping(path="/add")
-	public @ResponseBody String addNewProduto(@Valid
+	public ResponseEntity<String> addNewProduto(@Valid
 			@RequestParam String nome,
 			@RequestParam String descricao,
 			@RequestParam Double precoUnitario,
@@ -73,10 +74,11 @@ public class ProdutoController {
 			for (Node node : violation.getPropertyPath()) {
 			    field += node.getName();
 			}
-			throw new ResponseStatusException(
-			           HttpStatus.BAD_REQUEST, "Falha no cadastro do produto.Campo faltando:"+field);
+			/*throw new ResponseStatusException(
+			           HttpStatus.BAD_REQUEST, "Falha no cadastro do produto.Campo faltando:"+field);*/
+			return new ResponseEntity<String>("Falha no cadastro do produto.Campo faltando:"+field,HttpStatus.BAD_REQUEST);
 		}
-		return "Produto cadastrado com Sucesso!";
+		return new ResponseEntity<String>("Produto cadastrado com Sucesso!",HttpStatus.CREATED);
 	}
 	
 	@GetMapping(path="/all")
