@@ -34,7 +34,7 @@ public class MarcaController {
 	
 	private MarcaRepository marcaRepository;
 	
-	@RequestMapping(value="/add", method=RequestMethod.POST, produces=MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value="/add", method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> addNewMarca(@Valid
 			@RequestBody String nome,
 			@RequestBody String descricao) {
