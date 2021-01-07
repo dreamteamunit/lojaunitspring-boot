@@ -36,12 +36,14 @@ public class MarcaController {
 	
 	@RequestMapping(value="/add", method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> addNewMarca(@Valid
-			@RequestBody String nome,
-			@RequestBody String descricao) {
+			@RequestBody Marca marca
+			//@RequestParam String nome,
+			//@RequestParam String descricao
+			) {
 		try {
-			Marca marca = new Marca();
-			marca.setNome(nome);
-			marca.setDescricao(descricao);
+			//Marca marca = new Marca();
+			//marca.setNome(nome);
+			//marca.setDescricao(descricao);
 			marcaRepository.save(marca);
 		}catch(ConstraintViolationException e) {
 			ConstraintViolation<?> violation = e.getConstraintViolations().iterator().next();
