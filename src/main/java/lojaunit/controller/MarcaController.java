@@ -64,10 +64,9 @@ public class MarcaController {
 		return marcaRepository.findAll();
 	}
 	
-	@GetMapping(path="/find/{id}",produces=MediaType.APPLICATION_JSON_VALUE)
-	public <T> ResponseEntity<T> getMarcaById(@PathVariable("id")Integer id){
-		ResponseEntity<T> r = new ResponseEntity(marcaRepository.findById(id),HttpStatus.FOUND);
-		return r;
+	@GetMapping(path="/find/{id}")
+	public @ResponseBody Optional<Marca> getMarcaById(@PathVariable("id")Integer id){
+		return marcaRepository.findById(id);
 	}
 	
 	@DeleteMapping(path="/delete/all")
