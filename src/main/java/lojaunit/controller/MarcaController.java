@@ -64,7 +64,7 @@ public class MarcaController {
 		return marcaRepository.findAll();
 	}
 	
-	@GetMapping(path="/find/{id}",produces=MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path="/find/{id}",consumes=MediaType.APPLICATION_JSON_VALUE,produces=MediaType.APPLICATION_JSON_VALUE)
 	public <T> ResponseEntity<T> getMarcaById(@PathVariable("id")Integer id){
 		ResponseEntity<T> r = new ResponseEntity(marcaRepository.findById(id),HttpStatus.FOUND);
 		return r;
