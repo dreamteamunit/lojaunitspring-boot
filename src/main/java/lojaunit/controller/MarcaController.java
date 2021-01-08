@@ -40,11 +40,12 @@ public class MarcaController {
 			//@RequestParam String nome,
 			//@RequestParam String descricao
 			) {
+		Marca salva = null;
 		try {
 			//Marca marca = new Marca();
 			//marca.setNome(nome);
 			//marca.setDescricao(descricao);
-			marcaRepository.save(marca);
+			salva = marcaRepository.save(marca);
 		}catch(ConstraintViolationException e) {
 			ConstraintViolation<?> violation = e.getConstraintViolations().iterator().next();
 			// get the last node of the violation
@@ -58,6 +59,11 @@ public class MarcaController {
 			/*throw new ResponseStatusException(
 			           HttpStatus.BAD_REQUEST, "Falha no cadastro da marca.Campo faltando:"+field);*/
 		}catch(Exception e) {
+			Marca marca2 = new Marca();
+			marca2.setDescricao("Falha no cadastro da marca");
+			return (ResponseEntity<T>) new ResponseEntity<Marca>(marca2,HttpStatus.BAD_REQUEST);
+		}
+		if(salva==null) {
 			Marca marca2 = new Marca();
 			marca2.setDescricao("Falha no cadastro da marca");
 			return (ResponseEntity<T>) new ResponseEntity<Marca>(marca2,HttpStatus.BAD_REQUEST);
