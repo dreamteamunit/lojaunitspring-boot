@@ -58,7 +58,7 @@ public class MarcaController {
 			return (ResponseEntity<T>) new ResponseEntity<Marca>(marca2,HttpStatus.BAD_REQUEST);
 			/*throw new ResponseStatusException(
 			           HttpStatus.BAD_REQUEST, "Falha no cadastro da marca.Campo faltando:"+field);*/
-		}catch(Exception e) {
+		}/*catch(Exception e) {
 			Marca marca2 = new Marca();
 			marca2.setDescricao("Falha no cadastro da marca");
 			return (ResponseEntity<T>) new ResponseEntity<Marca>(marca2,HttpStatus.BAD_REQUEST);
@@ -67,7 +67,7 @@ public class MarcaController {
 			Marca marca2 = new Marca();
 			marca2.setDescricao("Falha no cadastro da marca");
 			return (ResponseEntity<T>) new ResponseEntity<Marca>(marca2,HttpStatus.BAD_REQUEST);
-		}
+		}*/
 		return (ResponseEntity<T>) new ResponseEntity<Marca>(marca,HttpStatus.CREATED); 
 	}
 	
