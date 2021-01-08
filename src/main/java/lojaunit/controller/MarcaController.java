@@ -52,8 +52,9 @@ public class MarcaController {
 			for (Node node : violation.getPropertyPath()) {
 			    field += node.getName();
 			}
-			marca.setDescricao("Falha no cadastro da marca.Campo faltando:"+field);
-			return (ResponseEntity<T>) new ResponseEntity<Marca>(marca,HttpStatus.BAD_REQUEST);
+			Marca marca2 = new Marca();
+			marca2.setDescricao("Falha no cadastro da marca.Campo faltando:"+field);
+			return (ResponseEntity<T>) new ResponseEntity<Marca>(marca2,HttpStatus.BAD_REQUEST);
 			/*throw new ResponseStatusException(
 			           HttpStatus.BAD_REQUEST, "Falha no cadastro da marca.Campo faltando:"+field);*/
 		}
