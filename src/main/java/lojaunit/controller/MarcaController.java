@@ -40,6 +40,11 @@ public class MarcaController {
 			//@RequestParam String nome,
 			//@RequestParam String descricao
 			) {
+		if(marca==null) {
+			Marca marca2 = new Marca();
+			marca2.setDescricao("Falha no cadastro da marca");
+			return (ResponseEntity<T>) new ResponseEntity<Marca>(marca2,HttpStatus.BAD_REQUEST);
+		}
 		Marca salva = null;
 		try {
 			//Marca marca = new Marca();
