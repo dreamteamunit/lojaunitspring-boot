@@ -34,8 +34,8 @@ public class MarcaController {
 	
 	private MarcaRepository marcaRepository;
 	
-	@RequestMapping(value="/add", method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> addNewMarca(@Valid
+	@RequestMapping(value="/add", method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE,produces=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Marca> addNewMarca(@Valid
 			@RequestBody Marca marca
 			//@RequestParam String nome,
 			//@RequestParam String descricao
@@ -52,11 +52,11 @@ public class MarcaController {
 			for (Node node : violation.getPropertyPath()) {
 			    field += node.getName();
 			}
-			return  new ResponseEntity<String>("Falha no cadastro da marca.Campo faltando:"+field,HttpStatus.BAD_REQUEST);
+			return  new ResponseEntity("Falha no cadastro da marca.Campo faltando:"+field,HttpStatus.BAD_REQUEST);
 			/*throw new ResponseStatusException(
 			           HttpStatus.BAD_REQUEST, "Falha no cadastro da marca.Campo faltando:"+field);*/
 		}
-		return new ResponseEntity<String>("Marca cadastrada com Sucesso!",HttpStatus.CREATED); 
+		return new ResponseEntity<Marca>(marca,HttpStatus.CREATED); 
 	}
 	
 	@GetMapping(path="/all")
