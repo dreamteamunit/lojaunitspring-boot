@@ -36,43 +36,26 @@ public class MarcaController {
 	
 	@RequestMapping(value="/add", method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE,produces=MediaType.APPLICATION_JSON_VALUE)
 	public <T> ResponseEntity<T> addNewMarca(@Valid
-			@RequestBody(required = false) Marca marca
+			@RequestBody Marca marca
 			//@RequestParam String nome,
 			//@RequestParam String descricao
 			) {
-		if(marca==null) {
-			Marca marca2 = new Marca();
-			marca2.setDescricao("Falha no cadastro da marca");
-			return (ResponseEntity<T>) new ResponseEntity<Marca>(marca2,HttpStatus.BAD_REQUEST);
-		}
-		Marca salva = null;
 		try {
 			//Marca marca = new Marca();
 			//marca.setNome(nome);
 			//marca.setDescricao(descricao);
-			salva = marcaRepository.save(marca);
-		/*}catch(ConstraintViolationException e) {
+			marcaRepository.save(marca);
+		}catch(ConstraintViolationException e) {
 			ConstraintViolation<?> violation = e.getConstraintViolations().iterator().next();
 			// get the last node of the violation
 			String field = "";
 			for (Node node : violation.getPropertyPath()) {
 			    field += node.getName();
 			}
-			Marca marca2 = new Marca();
-			marca2.setDescricao("Falha no cadastro da marca.Campo faltando:"+field);
-			return (ResponseEntity<T>) new ResponseEntity<Marca>(marca2,HttpStatus.BAD_REQUEST);
+			return (ResponseEntity<T>) new ResponseEntity<String>("Falha no cadastro da marca.Campo faltando:"+field,HttpStatus.BAD_REQUEST);
 			/*throw new ResponseStatusException(
 			           HttpStatus.BAD_REQUEST, "Falha no cadastro da marca.Campo faltando:"+field);*/
-		}catch(Exception e) {
-			Marca marca2 = new Marca();
-			marca2.setDescricao("Falha no cadastro da marca");
-			return (ResponseEntity<T>) new ResponseEntity<Marca>(marca2,HttpStatus.BAD_REQUEST);
 		}
-		/*if(salva==null) {
-			Marca marca2 = new Marca();
-			marca2.setDescricao("Falha no cadastro da marca");
-			return (ResponseEntity<T>) new ResponseEntity<Marca>(marca2,HttpStatus.BAD_REQUEST);
-		}*/
 		return (ResponseEntity<T>) new ResponseEntity<Marca>(marca,HttpStatus.CREATED); 
 	}
 	
