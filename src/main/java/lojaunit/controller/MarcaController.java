@@ -84,17 +84,13 @@ public class MarcaController {
 		return "Marca não encontrada";
 	}
 	
-	@PutMapping(path="/update/{id}")
-	public @ResponseBody String updateMarcaById(@RequestParam String nome, @RequestParam String descricao,
+	@RequestMapping(value="/update/{id}", method=RequestMethod.PUT, consumes=MediaType.APPLICATION_JSON_VALUE,produces=MediaType.APPLICATION_JSON_VALUE)
+	public <T> ResponseEntity<T> updateMarcaById(@RequestBody Marca marca,
 			@PathVariable("id")Integer id) {
 		if(marcaRepository.existsById(id)) {
-			Marca marca = new Marca();
-			marca.setId(id);
-			marca.setNome(nome);
-			marca.setDescricao(descricao);
 			marcaRepository.save(marca);
-			return "Marca atualizada com Sucesso!";
+			return (ResponseEntity<T>) new ResponseEntity<Marca>(marca,HttpStatus.OK);
 		}
-		return "Marca não encotrada";
+		return (ResponseEntity<T>) new ResponseEntity<String>("Falha na atualização da marca",HttpStatus.BAD_REQUEST);
 	}
 }
