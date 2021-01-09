@@ -11,6 +11,7 @@ import javax.validation.UnexpectedTypeException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,7 +37,7 @@ public class FaqController {
 	private ProdutoRepository produtoRepository;
 	
 	@PostMapping(path="/add")
-	public @ResponseBody String addNewFaq(@Valid
+	public ResponseEntity<String> addNewFaq(@Valid
 			@RequestParam Timestamp datahora,
 			@RequestParam String texto,
 			@RequestParam Integer idProduto
@@ -55,13 +56,15 @@ public class FaqController {
 			for (Node node : violation.getPropertyPath()) {
 			    field += node.getName();
 			}
-			throw new ResponseStatusException(
-			           HttpStatus.BAD_REQUEST, "Falha no cadastro da faq.Campo faltando:"+field);
+			/*throw new ResponseStatusException(
+			           HttpStatus.BAD_REQUEST, "Falha no cadastro da faq.Campo faltando:"+field);*/
+			return new ResponseEntity<String>("Falha no cadastro da faq.Campo faltando:"+field,HttpStatus.BAD_REQUEST);
 		}catch(UnexpectedTypeException e) {
-			throw new ResponseStatusException(
-			           HttpStatus.BAD_REQUEST, "Falha no cadastro da faq.:");
+			/*throw new ResponseStatusException(
+			           HttpStatus.BAD_REQUEST, "Falha no cadastro da faq.:");*/
+			return new ResponseEntity<String>("Falha no cadastro da faq.Esperava um tipo de campo na requisição e foi passado outro",HttpStatus.BAD_REQUEST);
 		}
-		return "Faq Cadastrado com Sucesso!";
+		return new ResponseEntity<String>("Faq Cadastrado com Sucesso!",HttpStatus.CREATED);
 	}
 	
 	@GetMapping(path="/all")

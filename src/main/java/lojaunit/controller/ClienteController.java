@@ -5,12 +5,13 @@ import java.util.Optional;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import javax.validation.Valid;
 import javax.validation.Path.Node;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,7 +33,7 @@ public class ClienteController {
 	private ClienteRepository clienteRepository;
 
 	@PostMapping(path = "/add")
-	public @ResponseBody String addNewCliente(@Valid @RequestParam String nome, @RequestParam String cpf,
+	public ResponseEntity<String> addNewCliente(@Valid @RequestParam String nome, @RequestParam String cpf,
 			@RequestParam String email, @RequestParam Date dataNascimento, @RequestParam String sexo,
 			@RequestParam String nomeSocial, @RequestParam String apelido, @RequestParam String telefone) {
 
@@ -54,14 +55,16 @@ public class ClienteController {
 			for (Node node : violation.getPropertyPath()) {
 			    field += node.getName();
 			}
-			throw new ResponseStatusException(
-			           HttpStatus.BAD_REQUEST, "Falha no cadastro do cliente.Campo faltando:"+field);
+			/*throw new ResponseStatusException(
+			           HttpStatus.BAD_REQUEST, "Falha no cadastro do cliente.Campo faltando:"+field);*/
+			return new ResponseEntity<String>("Falha no cadastro do cliente.Campo faltando:"+field,HttpStatus.BAD_REQUEST);
 		}
 		catch(DataIntegrityViolationException e) {
-			throw new ResponseStatusException(
-			           HttpStatus.BAD_REQUEST, "Falha no cadastro do cliente.Cpf já cadastrado");
+			/*throw new ResponseStatusException(
+			           HttpStatus.BAD_REQUEST, "Falha no cadastro do cliente.Cpf já cadastrado");*/
+			return new ResponseEntity<String>("Falha no cadastro do cliente.Cpf já cadastrado",HttpStatus.BAD_GATEWAY);
 		}
-		return "Cliente Cadastrado com Sucesso!";
+		return new ResponseEntity<String>("Cliente Cadastrado com Sucesso!",HttpStatus.CREATED);
 	}
 
 	@GetMapping(path = "/all")

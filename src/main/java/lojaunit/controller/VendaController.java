@@ -11,6 +11,7 @@ import javax.validation.Path.Node;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,7 +43,7 @@ public class VendaController {
 	private FormaPagamentoRepository formaPagamentoRepository;
 	
 	@PostMapping(path="/add")
-	public @ResponseBody String addNewVenda(@Valid
+	public ResponseEntity<String> addNewVenda(@Valid
 			@RequestParam Timestamp datahora,
 			@RequestParam Double valorTotal,
 			@RequestParam Integer idCliente,
@@ -64,13 +65,15 @@ public class VendaController {
 			for (Node node : violation.getPropertyPath()) {
 			    field += node.getName();
 			}
-			throw new ResponseStatusException(
-			           HttpStatus.BAD_REQUEST, "Falha no cadastro da venda.Campo faltando:"+field);
+			/*throw new ResponseStatusException(
+			           HttpStatus.BAD_REQUEST, "Falha no cadastro da venda.Campo faltando:"+field);*/
+			return new ResponseEntity<String>("Falha no cadastro da venda.Campo faltando:"+field,HttpStatus.BAD_REQUEST);
 		}catch(UnexpectedTypeException e) {
-			throw new ResponseStatusException(
-			           HttpStatus.BAD_REQUEST, "Falha no cadastro da venda:");
+			/*throw new ResponseStatusException(
+			           HttpStatus.BAD_REQUEST, "Falha no cadastro da venda:");*/
+			return new ResponseEntity<String>("Falha no cadastro da venda.Esperava um tipo de campo na requisição e foi passado outro",HttpStatus.BAD_GATEWAY);
 		}
-		return "Venda realizada com Sucesso!";
+		return new ResponseEntity<String>("Venda realizada com Sucesso!",HttpStatus.CREATED);
 	}
 	
 	@GetMapping(path="/all")

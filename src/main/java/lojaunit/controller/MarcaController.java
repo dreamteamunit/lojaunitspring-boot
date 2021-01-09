@@ -9,13 +9,17 @@ import javax.validation.Path.Node;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
@@ -30,14 +34,16 @@ public class MarcaController {
 	
 	private MarcaRepository marcaRepository;
 	
-	@PostMapping(path="/add")
-	public @ResponseBody String addNewMarca(@Valid
-			@RequestParam String nome,
-			@RequestParam String descricao) {
+	@RequestMapping(value="/add", method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE,produces=MediaType.APPLICATION_JSON_VALUE)
+	public <T> ResponseEntity<T> addNewMarca(@Valid
+			@RequestBody Marca marca
+			//@RequestParam String nome,
+			//@RequestParam String descricao
+			) {
 		try {
-			Marca marca = new Marca();
-			marca.setNome(nome);
-			marca.setDescricao(descricao);
+			//Marca marca = new Marca();
+			//marca.setNome(nome);
+			//marca.setDescricao(descricao);
 			marcaRepository.save(marca);
 		}catch(ConstraintViolationException e) {
 			ConstraintViolation<?> violation = e.getConstraintViolations().iterator().next();
@@ -46,10 +52,11 @@ public class MarcaController {
 			for (Node node : violation.getPropertyPath()) {
 			    field += node.getName();
 			}
-			throw new ResponseStatusException(
-			           HttpStatus.BAD_REQUEST, "Falha no cadastro da marca.Campo faltando:"+field);
+			return (ResponseEntity<T>) new ResponseEntity<String>("Falha no cadastro da marca.Campo faltando:"+field,HttpStatus.BAD_REQUEST);
+			/*throw new ResponseStatusException(
+			           HttpStatus.BAD_REQUEST, "Falha no cadastro da marca.Campo faltando:"+field);*/
 		}
-		return "Marca cadastrada com Sucesso!"; 
+		return (ResponseEntity<T>) new ResponseEntity<Marca>(marca,HttpStatus.CREATED); 
 	}
 	
 	@GetMapping(path="/all")
