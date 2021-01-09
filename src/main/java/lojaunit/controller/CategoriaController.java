@@ -9,6 +9,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,12 +17,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import lojaunit.entities.Categoria;
+import lojaunit.entities.Marca;
 import lojaunit.repository.CategoriaRepository;
 
 @Controller
@@ -31,11 +35,13 @@ public class CategoriaController {
 	
 	private CategoriaRepository categoriaRepository;
 	
-	@PostMapping(path="/add")
-	public ResponseEntity<String> addNewCategoria(@Valid @RequestParam String nome, @RequestParam Boolean ativo) {
-		Categoria categoria = new Categoria();
+	@RequestMapping(value="/add", method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE,produces=MediaType.APPLICATION_JSON_VALUE)
+	public <T> ResponseEntity<T> addNewCategoria(@Valid 
+			@RequestBody Categoria categoria
+			/*@RequestParam String nome, @RequestParam Boolean ativo*/) {
+		/*Categoria categoria = new Categoria();
 		categoria.setNome(nome);
-		categoria.setAtivo(ativo);
+		categoria.setAtivo(ativo);*/
 		try {
 			categoriaRepository.save(categoria);
 		}catch(ConstraintViolationException e) {
@@ -46,10 +52,11 @@ public class CategoriaController {
 			    field += node.getName();
 			}
 			/*throw new ResponseStatusException(
-			           HttpStatus.BAD_REQUEST, "Falha no cadastro da categoria.Campo faltando:"+field);*/
-			return new ResponseEntity<String>("Falha no cadastro da categoria.Campo faltando:"+field,HttpStatus.BAD_REQUEST);
+			           HttpStatus.BAD_REQUEST, "Falha no cadastro da categoria.Campo faltando:"+field);
+			return new ResponseEntity<String>("Falha no cadastro da categoria.Campo faltando:"+field,HttpStatus.BAD_REQUEST);*/
+			return (ResponseEntity<T>) new ResponseEntity<String>("Falha no cadastro da categoria. Campo faltando:"+field,HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<String>("Categoria cadastrada com Sucesso!",HttpStatus.CREATED);
+		return (ResponseEntity<T>) new ResponseEntity<Categoria>(categoria,HttpStatus.CREATED);
 	}
 	
 	@GetMapping(path="/all")
@@ -77,7 +84,7 @@ public class CategoriaController {
 		return "Categoria não encontrada";
 	}
 	
-	@PutMapping(path="/update/{id}")
+	/*@PutMapping(path="/update/{id}")
 	public @ResponseBody String updateCategoriaById(@RequestParam String nome, @RequestParam Boolean ativo,
 			@PathVariable("id")Integer id) {
 		if(categoriaRepository.existsById(id)) {
@@ -89,5 +96,15 @@ public class CategoriaController {
 			return "Categoria atualizada com Sucesso!";
 		}
 		return "Categoria não encontrada";
+	}*/
+	
+	@RequestMapping(value="/update/{id}", method=RequestMethod.PUT, consumes=MediaType.APPLICATION_JSON_VALUE,produces=MediaType.APPLICATION_JSON_VALUE)
+	public <T> ResponseEntity<T> updateCategoriaById(@RequestBody Categoria categoria,
+			@PathVariable("id")Integer id) {
+		if(categoriaRepository.existsById(id)) {
+			categoriaRepository.save(categoria);
+			return (ResponseEntity<T>) new ResponseEntity<Categoria>(categoria,HttpStatus.OK);
+		}
+		return (ResponseEntity<T>) new ResponseEntity<String>("Falha na atualização da Categoria",HttpStatus.BAD_REQUEST);
 	}
 }
