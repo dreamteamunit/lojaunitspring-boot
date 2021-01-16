@@ -11,6 +11,7 @@ import javax.validation.UnexpectedTypeException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,12 +19,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import lojaunit.entities.Faq;
+import lojaunit.entities.Marca;
 import lojaunit.entities.Produto;
 import lojaunit.repository.FaqRepository;
 import lojaunit.repository.ProdutoRepository;
@@ -36,17 +40,18 @@ public class FaqController {
 	@Autowired
 	private ProdutoRepository produtoRepository;
 	
-	@PostMapping(path="/add")
-	public ResponseEntity<String> addNewFaq(@Valid
-			@RequestParam Timestamp datahora,
+	@RequestMapping(value="/add", method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE,produces=MediaType.APPLICATION_JSON_VALUE)
+	public <T> ResponseEntity<T> addNewFaq(@Valid
+			@RequestBody Faq faq
+			/*@RequestParam Timestamp datahora,
 			@RequestParam String texto,
-			@RequestParam Integer idProduto
+			@RequestParam Integer idProduto*/
 			) {
-		Faq faq = new Faq();
+		/*Faq faq = new Faq();
 		faq.setDatahora(datahora);
 		faq.setTexto(texto);
 		Produto produto = produtoRepository.findById(idProduto).get();
-		faq.setProduto(produto);
+		faq.setProduto(produto);*/
 		try {
 			faqRepository.save(faq);
 		}catch(ConstraintViolationException e) {
@@ -56,15 +61,16 @@ public class FaqController {
 			for (Node node : violation.getPropertyPath()) {
 			    field += node.getName();
 			}
+			return (ResponseEntity<T>) new ResponseEntity<String>("Falha no cadastro faq. Campo faltando:"+field,HttpStatus.BAD_REQUEST);
 			/*throw new ResponseStatusException(
 			           HttpStatus.BAD_REQUEST, "Falha no cadastro da faq.Campo faltando:"+field);*/
-			return new ResponseEntity<String>("Falha no cadastro da faq.Campo faltando:"+field,HttpStatus.BAD_REQUEST);
-		}catch(UnexpectedTypeException e) {
-			/*throw new ResponseStatusException(
-			           HttpStatus.BAD_REQUEST, "Falha no cadastro da faq.:");*/
+			//return new ResponseEntity<String>("Falha no cadastro da faq.Campo faltando:"+field,HttpStatus.BAD_REQUEST);
+		}/*catch(UnexpectedTypeException e) {
+			throw new ResponseStatusException(
+			           HttpStatus.BAD_REQUEST, "Falha no cadastro da faq.:");
 			return new ResponseEntity<String>("Falha no cadastro da faq.Esperava um tipo de campo na requisição e foi passado outro",HttpStatus.BAD_REQUEST);
-		}
-		return new ResponseEntity<String>("Faq Cadastrado com Sucesso!",HttpStatus.CREATED);
+		}*/
+		return (ResponseEntity<T>) new ResponseEntity<Faq>(faq,HttpStatus.CREATED);
 	}
 	
 	@GetMapping(path="/all")
@@ -92,7 +98,7 @@ public class FaqController {
 		return "Faq não encontrado";
 	}
 	
-	@PutMapping(path="/update/{id}")
+	/*@PutMapping(path="/update/{id}")
 	public @ResponseBody String updateFaqById(
 			@RequestParam Timestamp datahora,
 			@RequestParam String texto,
@@ -109,5 +115,15 @@ public class FaqController {
 			return "Faq atualizado com Sucesso!";
 		}
 		return "Faq não encontrado";
+	}*/
+	
+	@RequestMapping(value="/update/{id}", method=RequestMethod.PUT, consumes=MediaType.APPLICATION_JSON_VALUE,produces=MediaType.APPLICATION_JSON_VALUE)
+	public <T> ResponseEntity<T> updateFaqById(@RequestBody Faq faq,
+			@PathVariable("id")Integer id) {
+		if(faqRepository.existsById(id)) {
+			faqRepository.save(faq);
+			return (ResponseEntity<T>) new ResponseEntity<Faq>(faq,HttpStatus.OK);
+		}
+		return (ResponseEntity<T>) new ResponseEntity<String>("Falha na atualização faq",HttpStatus.BAD_REQUEST);
 	}
 }
