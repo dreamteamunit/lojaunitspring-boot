@@ -11,12 +11,17 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.JsonNode;
+
 @Entity
 public class Faq {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	@NotNull(message="Campo obrigatório")
+	//@JsonFormat(shape = JsonFormat.Shape.STRING,pattern="dd/MM/yyyy")
+	@JsonFormat(pattern = "dd/MM/yyyy hh:mm:ss a")
 	private Timestamp datahora;
 	@NotNull(message="Campo obrigatório")
 	private String texto;
@@ -48,5 +53,4 @@ public class Faq {
 	public void setProduto(Produto produto) {
 		this.produto = produto;
 	}
-	
 }

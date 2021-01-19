@@ -1,6 +1,7 @@
 package lojaunit.controller;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import javax.validation.ConstraintViolation;
@@ -26,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import lojaunit.entities.Faq;
 import lojaunit.entities.Marca;
 import lojaunit.entities.Produto;
@@ -42,18 +45,26 @@ public class FaqController {
 	
 	@RequestMapping(value="/add", method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE,produces=MediaType.APPLICATION_JSON_VALUE)
 	public <T> ResponseEntity<T> addNewFaq(@Valid
-			@RequestBody Faq faq
+			@RequestBody ObjectNode faq
 			/*@RequestParam Timestamp datahora,
 			@RequestParam String texto,
 			@RequestParam Integer idProduto*/
 			) {
+		//https://medium.com/@andylke/rest-controller-configure-date-time-format-in-json-response-201e97aa74b0
+		Faq faq2 = new Faq();
+		//faq2.setDatahora(faq.get("datahora"));
+		faq2.setDatahora(LocalDateTime.parse(faq.get("datahora").asText("datahora")));
+		faq2.setTexto(faq.get("texto").asText());
+		Produto produto = produtoRepository.findById(faq.get("idProduto").asInt()).get();
+		faq2.setProduto(produto);
+		
 		/*Faq faq = new Faq();
 		faq.setDatahora(datahora);
 		faq.setTexto(texto);
 		Produto produto = produtoRepository.findById(idProduto).get();
 		faq.setProduto(produto);*/
 		try {
-			faqRepository.save(faq);
+			faqRepository.save(faq2);
 		}catch(ConstraintViolationException e) {
 			ConstraintViolation<?> violation = e.getConstraintViolations().iterator().next();
 			// get the last node of the violation
