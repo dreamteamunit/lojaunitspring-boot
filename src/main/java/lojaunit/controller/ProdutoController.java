@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import lojaunit.entities.Categoria;
 import lojaunit.entities.Fornecedor;
 import lojaunit.entities.Marca;
@@ -56,22 +58,22 @@ public class ProdutoController {
 			@RequestParam Integer idCategoria,
 			@RequestParam Integer idFornecedor,
 			@RequestParam Integer idMarca*/
-			@RequestBody Produto produto) {
+			@RequestBody ObjectNode produto) {
 		
-		/*Produto produto = new Produto();
-		produto.setNome(nome);
-		produto.setDescricao(descricao);
-		produto.setPrecoUnitario(precoUnitario);
-		produto.setUnidade(unidade);*/
-		Categoria categoria = categoriaRepository.findById(1).get();
-		produto.setCategoria(categoria);
-		Fornecedor fornecedor = fornecedorRepository.findById(2).get();
-		produto.setFornecedor(fornecedor);
-		Marca marca = marcaRepository.findById(33).get();
-		produto.setMarca(marca);
-		System.out.println(produto.toString());
+		
+		Produto produto2 = new Produto();
+		produto2.setNome(produto.get("nome").asText());
+		produto2.setDescricao(produto.get("descricao").asText());
+		produto2.setPrecoUnitario(produto.get("precoUnitario").asDouble());
+		produto2.setUnidade(produto.get("unidade").asText());
+		Categoria categoria = categoriaRepository.findById(produto.get("idCategoria").asInt()).get();
+		produto2.setCategoria(categoria);
+		Fornecedor fornecedor = fornecedorRepository.findById(produto.get("idFornecedor").asInt()).get();
+		produto2.setFornecedor(fornecedor);
+		Marca marca = marcaRepository.findById(produto.get("idMarca").asInt()).get();
+		produto2.setMarca(marca);
 		try {
-			produtoRepository.save(produto);
+			produtoRepository.save(produto2);
 		}catch(ConstraintViolationException e) {
 			ConstraintViolation<?> violation = e.getConstraintViolations().iterator().next();
 			// get the last node of the violation
@@ -84,7 +86,7 @@ public class ProdutoController {
 			return (ResponseEntity<T>) new ResponseEntity<String>("Falha no cadastro da produto. Campo faltando:"+field,HttpStatus.BAD_REQUEST);
 			//return new ResponseEntity<String>("Falha no cadastro do produto.Campo faltando:"+field,HttpStatus.BAD_REQUEST);
 		}
-		return (ResponseEntity<T>) new ResponseEntity<Produto>(produto,HttpStatus.CREATED); 
+		return (ResponseEntity<T>) new ResponseEntity<Object>(produto,HttpStatus.CREATED); 
 		//return new ResponseEntity<String>("Produto cadastrado com Sucesso!",HttpStatus.CREATED);
 	}
 	
