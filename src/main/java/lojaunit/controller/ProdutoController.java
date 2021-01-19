@@ -62,13 +62,14 @@ public class ProdutoController {
 		produto.setNome(nome);
 		produto.setDescricao(descricao);
 		produto.setPrecoUnitario(precoUnitario);
-		produto.setUnidade(unidade);
-		Categoria categoria = categoriaRepository.findById(idCategoria).get();
+		produto.setUnidade(unidade);*/
+		Categoria categoria = categoriaRepository.findById(1).get();
 		produto.setCategoria(categoria);
-		Fornecedor fornecedor = fornecedorRepository.findById(idFornecedor).get();
+		Fornecedor fornecedor = fornecedorRepository.findById(2).get();
 		produto.setFornecedor(fornecedor);
-		Marca marca = marcaRepository.findById(idMarca).get();
-		produto.setMarca(marca);*/
+		Marca marca = marcaRepository.findById(33).get();
+		produto.setMarca(marca);
+		System.out.println(produto.toString());
 		try {
 			produtoRepository.save(produto);
 		}catch(ConstraintViolationException e) {

@@ -18,7 +18,7 @@ public class Faq {
 	private Integer id;
 	@NotNull(message="Campo obrigatório")
 	private Timestamp datahora;
-	@NotBlank(message="Campo obrigatório")
+	@NotNull(message="Campo obrigatório")
 	private String texto;
 	@ManyToOne
 	@JoinColumn(name="id_produto")
