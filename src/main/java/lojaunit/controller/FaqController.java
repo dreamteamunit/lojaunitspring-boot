@@ -50,10 +50,9 @@ public class FaqController {
 			@RequestParam String texto,
 			@RequestParam Integer idProduto*/
 			) {
-		//https://medium.com/@andylke/rest-controller-configure-date-time-format-in-json-response-201e97aa74b0
 		Faq faq2 = new Faq();
-		//faq2.setDatahora(faq.get("datahora"));
-		faq2.setDatahora(Timestamp.valueOf(LocalDateTime.parse(faq.get("datahora").asText())));
+		String data = faq.get("datahora").asText();
+		faq2.setDatahora(Timestamp.valueOf(LocalDateTime.parse(data)));
 		faq2.setTexto(faq.get("texto").asText());
 		Produto produto = produtoRepository.findById(faq.get("idProduto").asInt()).get();
 		faq2.setProduto(produto);
