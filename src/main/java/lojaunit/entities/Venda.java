@@ -11,6 +11,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 @Entity
 @Table(name="vendas")
 public class Venda {
@@ -18,6 +20,7 @@ public class Venda {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	@NotNull(message="Campo obrigatório")
+	@JsonFormat(pattern = "dd/MM/yyyy hh:mm:ss a")
 	private Timestamp datahora;
 	@ManyToOne
 	@JoinColumn(name="id_cliente")
